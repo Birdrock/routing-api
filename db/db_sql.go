@@ -16,9 +16,7 @@ import (
 	"code.cloudfoundry.org/routing-api/config"
 	"code.cloudfoundry.org/routing-api/models"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"gorm.io/gorm"
 )
 
 //go:generate counterfeiter -o fakes/fake_db.go . DB
