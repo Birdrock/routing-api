@@ -2,7 +2,7 @@ package migration
 
 import (
 	"code.cloudfoundry.org/routing-api/db"
-	"code.cloudfoundry.org/routing-api/models"
+	v2 "code.cloudfoundry.org/routing-api/migration/v2"
 )
 
 type V2UpdateRgMigration struct{}
@@ -18,6 +18,5 @@ func (v *V2UpdateRgMigration) Version() int {
 }
 
 func (v *V2UpdateRgMigration) Run(sqlDB *db.SqlDB) error {
-	_, err := sqlDB.Client.Model(&models.RouterGroup{}).AddUniqueIndex("idx_rg_name", "name")
-	return err
+	return sqlDB.Client.AutoMigrate(&v2.RouterGroup{})
 }

@@ -2,7 +2,7 @@ package migration
 
 import (
 	"code.cloudfoundry.org/routing-api/db"
-	"code.cloudfoundry.org/routing-api/models"
+	v3 "code.cloudfoundry.org/routing-api/migration/v3"
 )
 
 type V3UpdateTcpRouteMigration struct{}
@@ -18,5 +18,5 @@ func (v *V3UpdateTcpRouteMigration) Version() int {
 }
 
 func (v *V3UpdateTcpRouteMigration) Run(sqlDB *db.SqlDB) error {
-	return sqlDB.Client.Model(models.TcpRouteMapping{}).AutoMigrate(models.TcpRouteMapping{})
+	return sqlDB.Client.AutoMigrate(v3.TcpRouteMapping{})
 }

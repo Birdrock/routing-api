@@ -18,13 +18,14 @@ func (v *V5SniHostnameMigration) Version() int {
 }
 
 func (v *V5SniHostnameMigration) Run(sqlDB *db.SqlDB) error {
-	_, err := sqlDB.Client.Model(&models.TcpRouteMapping{}).RemoveIndex("idx_tcp_route")
-	if err != nil {
-		return err
-	}
-	err = sqlDB.Client.AutoMigrate(&models.TcpRouteMapping{})
-	if err != nil {
-		return err
-	}
-	return err
+	// _, err := sqlDB.Client.Model(&models.TcpRouteMapping{}).RemoveIndex("idx_tcp_route")
+	// if err != nil {
+	// 	return err
+	// }
+	// err = sqlDB.Client.AutoMigrate(&models.TcpRouteMapping{})
+	// if err != nil {
+	// 	return err
+	// }
+	// return err
+	return sqlDB.Client.AutoMigrate(&models.TcpRouteMapping{})
 }
