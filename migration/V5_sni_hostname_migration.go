@@ -2,7 +2,7 @@ package migration
 
 import (
 	"code.cloudfoundry.org/routing-api/db"
-	"code.cloudfoundry.org/routing-api/models"
+	v5 "code.cloudfoundry.org/routing-api/migration/v5"
 )
 
 type V5SniHostnameMigration struct{}
@@ -18,14 +18,5 @@ func (v *V5SniHostnameMigration) Version() int {
 }
 
 func (v *V5SniHostnameMigration) Run(sqlDB *db.SqlDB) error {
-	// _, err := sqlDB.Client.Model(&models.TcpRouteMapping{}).RemoveIndex("idx_tcp_route")
-	// if err != nil {
-	// 	return err
-	// }
-	// err = sqlDB.Client.AutoMigrate(&models.TcpRouteMapping{})
-	// if err != nil {
-	// 	return err
-	// }
-	// return err
-	return sqlDB.Client.AutoMigrate(&models.TcpRouteMapping{})
+	return sqlDB.Client.AutoMigrate(&v5.TcpRouteMapping{})
 }

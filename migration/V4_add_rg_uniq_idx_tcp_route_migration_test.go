@@ -7,7 +7,7 @@ import (
 	"code.cloudfoundry.org/routing-api/db"
 	"code.cloudfoundry.org/routing-api/migration"
 	v0 "code.cloudfoundry.org/routing-api/migration/v0"
-	"code.cloudfoundry.org/routing-api/models"
+	v4 "code.cloudfoundry.org/routing-api/migration/v4"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -46,10 +46,10 @@ var _ = Describe("V4AddRgUniqIdxTCPRouteMigration", func() {
 			})
 
 			It("allows multiple TCP routes with different router group guids", func() {
-				tcpRoute1 := models.TcpRouteMapping{
-					Model:     models.Model{Guid: "guid-1"},
+				tcpRoute1 := v4.TcpRouteMapping{
+					Model:     v4.Model{Guid: "guid-1"},
 					ExpiresAt: time.Now().Add(1 * time.Hour),
-					TcpMappingEntity: models.TcpMappingEntity{
+					TcpMappingEntity: v4.TcpMappingEntity{
 						RouterGroupGuid: "test1",
 						HostPort:        80,
 						HostIP:          "1.2.3.4",
@@ -57,10 +57,10 @@ var _ = Describe("V4AddRgUniqIdxTCPRouteMigration", func() {
 					},
 				}
 
-				tcpRoute2 := models.TcpRouteMapping{
-					Model:     models.Model{Guid: "guid-2"},
+				tcpRoute2 := v4.TcpRouteMapping{
+					Model:     v4.Model{Guid: "guid-2"},
 					ExpiresAt: time.Now().Add(1 * time.Hour),
-					TcpMappingEntity: models.TcpMappingEntity{
+					TcpMappingEntity: v4.TcpMappingEntity{
 						RouterGroupGuid: "test2",
 						HostPort:        80,
 						HostIP:          "1.2.3.4",
@@ -82,10 +82,10 @@ var _ = Describe("V4AddRgUniqIdxTCPRouteMigration", func() {
 
 		Context("when there are existing records", func() {
 			BeforeEach(func() {
-				tcpRoute1 := models.TcpRouteMapping{
-					Model:     models.Model{Guid: "guid-1"},
+				tcpRoute1 := v4.TcpRouteMapping{
+					Model:     v4.Model{Guid: "guid-1"},
 					ExpiresAt: time.Now().Add(1 * time.Hour),
-					TcpMappingEntity: models.TcpMappingEntity{
+					TcpMappingEntity: v4.TcpMappingEntity{
 						RouterGroupGuid: "test1",
 						HostPort:        80,
 						HostIP:          "1.2.3.4",
@@ -101,10 +101,10 @@ var _ = Describe("V4AddRgUniqIdxTCPRouteMigration", func() {
 				err := v4Migration.Run(sqlDB)
 				Expect(err).NotTo(HaveOccurred())
 
-				tcpRoute2 := models.TcpRouteMapping{
-					Model:     models.Model{Guid: "guid-2"},
+				tcpRoute2 := v4.TcpRouteMapping{
+					Model:     v4.Model{Guid: "guid-2"},
 					ExpiresAt: time.Now().Add(1 * time.Hour),
-					TcpMappingEntity: models.TcpMappingEntity{
+					TcpMappingEntity: v4.TcpMappingEntity{
 						RouterGroupGuid: "test2",
 						HostPort:        80,
 						HostIP:          "1.2.3.4",
@@ -121,10 +121,10 @@ var _ = Describe("V4AddRgUniqIdxTCPRouteMigration", func() {
 
 			Context("when the routes have unique ports", func() {
 				BeforeEach(func() {
-					tcpRoute2 := models.TcpRouteMapping{
-						Model:     models.Model{Guid: "guid-2"},
+					tcpRoute2 := v4.TcpRouteMapping{
+						Model:     v4.Model{Guid: "guid-2"},
 						ExpiresAt: time.Now().Add(1 * time.Hour),
-						TcpMappingEntity: models.TcpMappingEntity{
+						TcpMappingEntity: v4.TcpMappingEntity{
 							RouterGroupGuid: "test2",
 							HostPort:        53,
 							HostIP:          "1.2.3.4",

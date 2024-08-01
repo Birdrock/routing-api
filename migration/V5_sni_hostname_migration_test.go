@@ -7,7 +7,7 @@ import (
 	"code.cloudfoundry.org/routing-api/db"
 	"code.cloudfoundry.org/routing-api/migration"
 	v0 "code.cloudfoundry.org/routing-api/migration/v0"
-	"code.cloudfoundry.org/routing-api/models"
+	v5 "code.cloudfoundry.org/routing-api/migration/v5"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -41,10 +41,10 @@ var _ = Describe("V5SniHostnameMigration", func() {
 				Expect(err).ToNot(HaveOccurred())
 
 				sniHostname1 := "sniHostname1"
-				tcpRoute1 := models.TcpRouteMapping{
-					Model:     models.Model{Guid: "guid-1"},
+				tcpRoute1 := v5.TcpRouteMapping{
+					Model:     v5.Model{Guid: "guid-1"},
 					ExpiresAt: time.Now().Add(1 * time.Hour),
-					TcpMappingEntity: models.TcpMappingEntity{
+					TcpMappingEntity: v5.TcpMappingEntity{
 						RouterGroupGuid: "test1",
 						HostPort:        80,
 						HostIP:          "1.2.3.4",
@@ -58,10 +58,10 @@ var _ = Describe("V5SniHostnameMigration", func() {
 
 			It("allows adding the same TCP routes with different SNI hostnames", func() {
 				sniHostname2 := "sniHostname2"
-				tcpRoute2 := models.TcpRouteMapping{
-					Model:     models.Model{Guid: "guid-2"},
+				tcpRoute2 := v5.TcpRouteMapping{
+					Model:     v5.Model{Guid: "guid-2"},
 					ExpiresAt: time.Now().Add(1 * time.Hour),
-					TcpMappingEntity: models.TcpMappingEntity{
+					TcpMappingEntity: v5.TcpMappingEntity{
 						RouterGroupGuid: "test1",
 						HostPort:        80,
 						HostIP:          "1.2.3.4",
@@ -79,10 +79,10 @@ var _ = Describe("V5SniHostnameMigration", func() {
 
 			It("denies adding the same TCP routes with same SNI hostnames", func() {
 				sniHostname1 := "sniHostname1"
-				tcpRoute2 := models.TcpRouteMapping{
-					Model:     models.Model{Guid: "guid-2"},
+				tcpRoute2 := v5.TcpRouteMapping{
+					Model:     v5.Model{Guid: "guid-2"},
 					ExpiresAt: time.Now().Add(1 * time.Hour),
-					TcpMappingEntity: models.TcpMappingEntity{
+					TcpMappingEntity: v5.TcpMappingEntity{
 						RouterGroupGuid: "test1",
 						HostPort:        80,
 						HostIP:          "1.2.3.4",
