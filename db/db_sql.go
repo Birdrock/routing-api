@@ -16,9 +16,8 @@ import (
 	"code.cloudfoundry.org/routing-api/config"
 	"code.cloudfoundry.org/routing-api/models"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 //go:generate counterfeiter -o fakes/fake_db.go . DB
@@ -113,15 +112,22 @@ func NewSqlDB(cfg *config.SqlDB) (*SqlDB, error) {
 		return nil, err
 	}
 
-	db, err := gorm.Open(cfg.Type, connStr)
+	// db, err := gorm.Open(cfg.Type, connStr)
+	var db *gorm.DB
+	db, err = gorm.Open(mysql.Open(connStr), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
 
-	db.DB().SetMaxIdleConns(cfg.MaxIdleConns)
-	db.DB().SetMaxOpenConns(cfg.MaxOpenConns)
+	sqlDB, err := db.DB()
+	if err != nil {
+		return nil, err
+	}
+	// sqlDB.SetMaxIdleConns()
+	sqlDB.SetMaxIdleConns(cfg.MaxIdleConns)
+	sqlDB.SetMaxOpenConns(cfg.MaxOpenConns)
 	connMaxLifetime := time.Duration(cfg.ConnMaxLifetime) * time.Second
-	db.DB().SetConnMaxLifetime(connMaxLifetime)
+	sqlDB.SetConnMaxLifetime(connMaxLifetime)
 
 	tcpEventHub := eventhub.NewNonBlocking(1024)
 	httpEventHub := eventhub.NewNonBlocking(1024)

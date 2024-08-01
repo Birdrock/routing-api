@@ -3,6 +3,7 @@ package migration
 import (
 	"code.cloudfoundry.org/routing-api/db"
 	v4 "code.cloudfoundry.org/routing-api/migration/v4"
+	"code.cloudfoundry.org/routing-api/models"
 )
 
 type V4AddRgUniqIdxTCPRoute struct{}
@@ -18,5 +19,9 @@ func (v *V4AddRgUniqIdxTCPRoute) Version() int {
 }
 
 func (v *V4AddRgUniqIdxTCPRoute) Run(sqlDB *db.SqlDB) error {
+	err := sqlDB.Client.DropIndex(&models.TcpRouteMapping{}, "idx_tcp_route")
+	if err != nil {
+		return err
+	}
 	return sqlDB.Client.AutoMigrate(&v4.TcpRouteMapping{})
 }

@@ -18,5 +18,9 @@ func (v *V5SniHostnameMigration) Version() int {
 }
 
 func (v *V5SniHostnameMigration) Run(sqlDB *db.SqlDB) error {
+	err := sqlDB.Client.DropIndex(&v5.TcpRouteMapping{}, "idx_tcp_route")
+	if err != nil {
+		return err
+	}
 	return sqlDB.Client.AutoMigrate(&v5.TcpRouteMapping{})
 }
