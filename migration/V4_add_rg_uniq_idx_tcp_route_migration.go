@@ -19,9 +19,6 @@ func (v *V4AddRgUniqIdxTCPRoute) Version() int {
 }
 
 func (v *V4AddRgUniqIdxTCPRoute) Run(sqlDB *db.SqlDB) error {
-	err := sqlDB.Client.DropIndex(&models.TcpRouteMapping{}, "idx_tcp_route")
-	if err != nil {
-		return err
-	}
+	_ = sqlDB.Client.DropIndex(&models.TcpRouteMapping{}, "idx_tcp_route")
 	return sqlDB.Client.AutoMigrate(&v4.TcpRouteMapping{})
 }

@@ -10,7 +10,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = FDescribe("V0InitMigration", func() {
+var _ = Describe("V0InitMigration", func() {
 	var (
 		dbAllocator testrunner.DbAllocator
 		dbClient    db.Client

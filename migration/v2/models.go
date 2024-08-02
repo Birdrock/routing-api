@@ -1,8 +1,9 @@
-package v0
+package v2
 
 import (
 	"time"
-	"gorm.io/gorm"
+
+	"code.cloudfoundry.org/routing-api/models"
 )
 
 type ModificationTag struct {
@@ -11,7 +12,7 @@ type ModificationTag struct {
 }
 
 type TcpRouteMapping struct {
-	Model
+	models.Model
 	ExpiresAt time.Time `json:"-"`
 	TcpMappingEntity
 }
@@ -30,7 +31,7 @@ type TcpMappingEntity struct {
 }
 
 type Route struct {
-	Model
+	models.Model
 	ExpiresAt time.Time `json:"-"`
 	RouteEntity
 }
@@ -46,7 +47,7 @@ type RouteEntity struct {
 }
 
 type RouterGroupDB struct {
-	Model
+	models.Model
 	Name            string
 	Type            string
 	ReservablePorts string
@@ -57,9 +58,9 @@ func (RouterGroupDB) TableName() string {
 }
 
 type RouterGroup struct {
-	Model
-	Guid            string `json:"guid"`
-	Name            string `gorm:"not null; uniqueIndex:idx_rg_name" json:"name"`
+	models.Model
+	Guid            string `gorm:"size:36" json:"guid"`
+	Name            string `gorm:"not null; uniqueIndex:idx_rg_name; size:253" json:"name"`
 	Type            string `json:"type"`
 	ReservablePorts string `json:"reservable_ports" yaml:"reservable_ports"`
 }

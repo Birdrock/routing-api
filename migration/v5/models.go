@@ -1,4 +1,4 @@
-package v0
+package v5
 
 import "time"
 
@@ -24,11 +24,11 @@ func (TcpRouteMapping) TableName() string {
 }
 
 type TcpMappingEntity struct {
-	RouterGroupGuid string  `gorm:"not null; unique_index:idx_tcp_route" json:"router_group_guid"`
-	HostPort        uint16  `gorm:"not null; unique_index:idx_tcp_route; type:int" json:"backend_port"`
-	HostIP          string  `gorm:"not null; unique_index:idx_tcp_route" json:"backend_ip"`
-	SniHostname     *string `gorm:"default:null; unique_index:idx_tcp_route" json:"backend_sni_hostname,omitempty"`
-	ExternalPort    uint16  `gorm:"not null; unique_index:idx_tcp_route; type: int" json:"port"`
+	RouterGroupGuid string  `gorm:"not null; uniqueIndex:idx_tcp_route; size:36" json:"router_group_guid"`
+	HostPort        uint16  `gorm:"not null; uniqueIndex:idx_tcp_route; type:int" json:"backend_port"`
+	HostIP          string  `gorm:"not null; uniqueIndex:idx_tcp_route; size:45" json:"backend_ip"`
+	SniHostname     *string `gorm:"default:null; uniqueIndex:idx_tcp_route" json:"backend_sni_hostname,omitempty"`
+	ExternalPort    uint16  `gorm:"not null; uniqueIndex:idx_tcp_route; type: int" json:"port"`
 	ModificationTag `json:"modification_tag"`
 	TTL             *int `json:"ttl,omitempty"`
 }
@@ -40,12 +40,12 @@ type Route struct {
 }
 
 type RouteEntity struct {
-	Route           string `gorm:"not null; unique_index:idx_route" json:"route"`
-	Port            uint16 `gorm:"not null; unique_index:idx_route" json:"port"`
-	IP              string `gorm:"not null; unique_index:idx_route" json:"ip"`
+	Route           string `gorm:"not null; uniqueIndex:idx_route" json:"route"`
+	Port            uint16 `gorm:"not null; uniqueIndex:idx_route" json:"port"`
+	IP              string `gorm:"not null; uniqueIndex:idx_route" json:"ip"`
 	TTL             *int   `json:"ttl"`
 	LogGuid         string `json:"log_guid"`
-	RouteServiceUrl string `gorm:"not null; unique_index:idx_route" json:"route_service_url,omitempty"`
+	RouteServiceUrl string `gorm:"not null; uniqueIndex:idx_route" json:"route_service_url,omitempty"`
 	ModificationTag `json:"modification_tag"`
 }
 

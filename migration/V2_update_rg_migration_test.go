@@ -12,7 +12,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = FDescribe("V2UpdateRgMigration", func() {
+var _ = Describe("V2UpdateRgMigration", func() {
 	var (
 		sqlDB       *db.SqlDB
 		dbAllocator testrunner.DbAllocator
