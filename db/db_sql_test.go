@@ -750,7 +750,12 @@ var _ = Describe("SqlDB", func() {
 			})
 
 			AfterEach(func() {
-				_, err = sqlDB.Client.Delete(&tcpRoute)
+				_, err = sqlDB.Client.Where("router_group_guid =?", routerGroupId).
+					Where("external_port = ?", 3056).
+					Where("host_ip = ?", "127.0.0.1").
+					Where("host_port = ?", 2990).
+					Where("ttl = ?", 5).
+					Delete(&tcpRoute)
 				Expect(err).ToNot(HaveOccurred())
 			})
 
@@ -806,7 +811,12 @@ var _ = Describe("SqlDB", func() {
 					})
 
 					AfterEach(func() {
-						_, err = sqlDB.Client.Delete(&tcpRoute2)
+						_, err = sqlDB.Client.Where("router_group_guid =?", routerGroupId2).
+							Where("external_port = ?", 3056).
+							Where("host_ip = ?", "127.0.0.1").
+							Where("host_port = ?", 2990).
+							Where("ttl = ?", 5).
+							Delete(&tcpRoute)
 						Expect(err).ToNot(HaveOccurred())
 					})
 
@@ -1138,7 +1148,14 @@ var _ = Describe("SqlDB", func() {
 			})
 
 			AfterEach(func() {
-				_, err = sqlDB.Client.Delete(&httpRoute)
+				_, err = sqlDB.Client.
+					Where("route  = ? ", "post_here").
+					Where("port = ?", 7000).
+					Where("ip = ?", "127.0.01").
+					Where("log_guid = ?", "my-guid").
+					Where("route_service_url = ?", "https://rs.com").
+					Where("ttl = ?", 5).
+					Delete(&httpRoute)
 				Expect(err).ToNot(HaveOccurred())
 			})
 

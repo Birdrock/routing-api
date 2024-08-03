@@ -300,7 +300,8 @@ func (s *SqlDB) DeleteRouterGroup(guid string) error {
 		return DeleteRouterGroupError
 	}
 
-	_, err = s.Client.Delete(&routerGroup)
+	_, err = s.Client.Where("guid = ?", guid).
+		Delete(&routerGroup)
 	if err != nil {
 		return err
 	}

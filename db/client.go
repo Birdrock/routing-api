@@ -8,7 +8,7 @@ import (
 
 //go:generate counterfeiter -o fakes/fake_client.go . Client
 type Client interface {
-	// Close() error
+	Close() error
 	Where(query interface{}, args ...interface{}) Client
 	Create(value interface{}) (int64, error)
 	Delete(value interface{}, where ...interface{}) (int64, error)
@@ -39,9 +39,14 @@ func (c *gormClient) DropColumn(dst interface{}, field string) error {
 	return c.db.Migrator().DropColumn(dst, field)
 }
 
-// func (c *gormClient) Close() error {
-// 	return c.db.Close()
-// }
+func (c *gormClient) Close() error {
+	sqlDB, err := c.db.DB()
+	if err != nil {
+		return err
+	}
+	sqlDB.Close()
+	return nil
+}
 
 // func (c *gormClient) RemoveIndex(indexName string) (Client, error) {
 // 	var newClient gormClient
