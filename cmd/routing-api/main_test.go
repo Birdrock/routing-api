@@ -248,6 +248,7 @@ var _ = Describe("Main", func() {
 			Expect(err).NotTo(HaveOccurred())
 		})
 		AfterEach(func() {
+			// TODO: field 'name' needs a size
 			gormDB.AutoMigrate(&models.RouterGroupDB{})
 			Expect(os.Remove(configPath)).To(Succeed())
 		})
