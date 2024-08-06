@@ -11,7 +11,6 @@ import (
 	"code.cloudfoundry.org/routing-api/cmd/routing-api/testrunner"
 	"code.cloudfoundry.org/routing-api/db"
 	"code.cloudfoundry.org/routing-api/models"
-	"github.com/jinzhu/gorm"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gbytes"
@@ -19,6 +18,8 @@ import (
 	"github.com/onsi/gomega/ghttp"
 	"github.com/tedsuo/ifrit"
 	ginkgomon "github.com/tedsuo/ifrit/ginkgomon_v2"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 const (
@@ -162,7 +163,9 @@ var _ = Describe("Main", func() {
 			rapiConfig := getRoutingAPIConfig(defaultConfig)
 			connectionString, err := db.ConnectionString(&rapiConfig.SqlDB)
 			Expect(err).NotTo(HaveOccurred())
-			gormDB, err := gorm.Open(rapiConfig.SqlDB.Type, connectionString)
+			// gormDB, err := gorm.Open(rapiConfig.SqlDB.Type, connectionString)
+			// TODO: ALSO IMPLEMENT POSTGRES
+			gormDB, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
 			Expect(err).NotTo(HaveOccurred())
 
 			getRoutes := func() string {
@@ -239,7 +242,9 @@ var _ = Describe("Main", func() {
 			}
 			connectionString, err := db.ConnectionString(&rapiConfig.SqlDB)
 			Expect(err).NotTo(HaveOccurred())
-			gormDB, err = gorm.Open(rapiConfig.SqlDB.Type, connectionString)
+			// gormDB, err = gorm.Open(rapiConfig.SqlDB.Type, connectionString)
+			// TODO: POSTGRES
+			gormDB, err = gorm.Open(mysql.Open(connectionString), &gorm.Config{})
 			Expect(err).NotTo(HaveOccurred())
 		})
 		AfterEach(func() {
