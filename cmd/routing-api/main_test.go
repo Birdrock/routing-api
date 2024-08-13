@@ -19,6 +19,7 @@ import (
 	"github.com/tedsuo/ifrit"
 	ginkgomon "github.com/tedsuo/ifrit/ginkgomon_v2"
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -157,16 +158,23 @@ var _ = Describe("Main", func() {
 		})
 
 		It("unregisters from the db when the process exits", func() {
+			var (
+				gormDB *gorm.DB
+				err    error
+			)
 			routingAPIRunner := testrunner.New(routingAPIBinPath, routingAPIArgs)
 			proc := ifrit.Invoke(routingAPIRunner)
 
 			rapiConfig := getRoutingAPIConfig(defaultConfig)
-			connectionString, err := db.ConnectionString(&rapiConfig.SqlDB)
+			connStr, err := db.ConnectionString(&rapiConfig.SqlDB)
 			Expect(err).NotTo(HaveOccurred())
-			// gormDB, err := gorm.Open(rapiConfig.SqlDB.Type, connectionString)
-			// TODO: ALSO IMPLEMENT POSTGRES
-			gormDB, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
-			Expect(err).NotTo(HaveOccurred())
+			switch rapiConfig.SqlDB.Type {
+			case "mysql":
+				gormDB, err = gorm.Open(mysql.Open(connStr), &gorm.Config{})
+			case "postgres":
+				gormDB, err = gorm.Open(postgres.Open(connStr), &gorm.Config{})
+			}
+			Expect(err).ToNot(HaveOccurred())
 
 			getRoutes := func() string {
 				var routes []models.Route

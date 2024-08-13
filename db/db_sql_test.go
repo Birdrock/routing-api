@@ -52,7 +52,7 @@ var _ = Describe("SqlDB", func() {
 					BeforeEach(func() {
 						cfg.SkipSSLValidation = true
 					})
-					It("returns a correct connection string with 'sslmode=disable'", func() {
+					XIt("returns a correct connection string with 'sslmode=disable'", func() {
 						connStr, err := db.ConnectionString(cfg)
 						connectionString := fmt.Sprintf(
 							"postgres://%s:%s@%s:%d/%s?sslmode=disable",
@@ -65,20 +65,33 @@ var _ = Describe("SqlDB", func() {
 						Expect(err).ToNot(HaveOccurred())
 						Expect(connStr).To(Equal(connectionString))
 					})
+					It("returns a correct connection string with 'sslmode=disable'", func() {
+						connStr, err := db.ConnectionString(cfg)
+						connectionString := fmt.Sprintf(
+							"host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
+							cfg.Host,
+							cfg.Username,
+							cfg.Password,
+							cfg.Schema,
+							cfg.Port,
+						)
+						Expect(err).ToNot(HaveOccurred())
+						Expect(connStr).To(Equal(connectionString))
+					})
 				})
 				Context("when SkipSSLValidation is false", func() {
 					BeforeEach(func() {
 						cfg.SkipSSLValidation = false
 					})
-					It("returns a correct connection string with 'sslmode=disable", func() {
+					It("returns a correct connection string with 'sslmode=disable'", func() {
 						connStr, err := db.ConnectionString(cfg)
 						connectionString := fmt.Sprintf(
-							"postgres://%s:%s@%s:%d/%s?sslmode=disable",
+							"host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
+							cfg.Host,
 							cfg.Username,
 							cfg.Password,
-							cfg.Host,
-							cfg.Port,
 							cfg.Schema,
+							cfg.Port,
 						)
 						Expect(err).ToNot(HaveOccurred())
 						Expect(connStr).To(Equal(connectionString))
@@ -97,12 +110,12 @@ var _ = Describe("SqlDB", func() {
 					It("returns a correct connection string with 'sslmode=require'", func() {
 						connStr, err := db.ConnectionString(cfg)
 						connectionString := fmt.Sprintf(
-							"postgres://%s:%s@%s:%d/%s?sslmode=require",
+							"host=%s user=%s password=%s dbname=%s port=%d sslmode=require",
+							cfg.Host,
 							cfg.Username,
 							cfg.Password,
-							cfg.Host,
-							cfg.Port,
 							cfg.Schema,
+							cfg.Port,
 						)
 						Expect(err).ToNot(HaveOccurred())
 						Expect(connStr).To(Equal(connectionString))
@@ -112,18 +125,18 @@ var _ = Describe("SqlDB", func() {
 					BeforeEach(func() {
 						cfg.SkipSSLValidation = false
 					})
-					It("returns a correct connection string with 'sslmode=verify-full&sslrootcert=/some/path/postgres_cert.pem", func() {
+					It("returns a correct connection string with 'sslmode=verify-full sslrootcert=/some/path/postgres_cert.pem'", func() {
 						connStr, err := db.ConnectionString(cfg)
 						connectionString := fmt.Sprintf(
-							`postgres://%s:%s@%s:%d/%s\?sslmode=verify-full&sslrootcert=.*/postgres_cert\.pem`,
+							`host=%s user=%s password=%s dbname=%s port=%d sslmode=verify-full sslrootcert=.*/postgres_cert\.pem`,
+							cfg.Host,
 							cfg.Username,
 							cfg.Password,
-							cfg.Host,
-							cfg.Port,
 							cfg.Schema,
+							cfg.Port,
 						)
 						Expect(err).ToNot(HaveOccurred())
-						Expect(connStr).To(MatchRegexp(connectionString))
+						Expect(connStr).To(Equal(connectionString))
 					})
 				})
 			})

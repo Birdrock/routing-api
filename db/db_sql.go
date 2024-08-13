@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"sync/atomic"
 	"time"
 
@@ -17,6 +18,7 @@ import (
 	"code.cloudfoundry.org/routing-api/models"
 
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -112,11 +114,18 @@ func NewSqlDB(cfg *config.SqlDB) (*SqlDB, error) {
 		return nil, err
 	}
 
-	// db, err := gorm.Open(cfg.Type, connStr)
 	var db *gorm.DB
-	db, err = gorm.Open(mysql.Open(connStr), &gorm.Config{})
-	if err != nil {
-		return nil, err
+	switch cfg.Type {
+	case "mysql":
+		db, err = gorm.Open(mysql.Open(connStr), &gorm.Config{})
+		if err != nil {
+			return nil, err
+		}
+	case "postgres":
+		db, err = gorm.Open(postgres.Open(connStr), &gorm.Config{})
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	sqlDB, err := db.DB()
@@ -638,12 +647,12 @@ func ConnectionString(cfg *config.SqlDB) (string, error) {
 		return connStringBuilder.Build(cfg)
 
 	case "postgres":
-		var queryString string
+		var sslOptions string
 		if cfg.CACert == "" {
-			queryString = "?sslmode=disable"
+			sslOptions = "sslmode=disable"
 		} else {
 			if cfg.SkipSSLValidation {
-				queryString = "?sslmode=require"
+				sslOptions = "sslmode=require"
 			} else {
 				tempDir, err := os.MkdirTemp("", "")
 				if err != nil {
@@ -654,19 +663,19 @@ func ConnectionString(cfg *config.SqlDB) (string, error) {
 				if err != nil {
 					return "", err
 				}
-				queryString = fmt.Sprintf("?sslmode=verify-full&sslrootcert=%s", certPath)
+				sslOptions = fmt.Sprintf("sslmode=verify-full sslrootcert=%s", certPath)
 			}
 		}
 		connectionString = fmt.Sprintf(
-			"postgres://%s:%s@%s:%d/%s%s",
+			"host=%s user=%s password=%s dbname=%s port=%d %s",
+			cfg.Host,
 			cfg.Username,
 			cfg.Password,
-			cfg.Host,
-			cfg.Port,
 			cfg.Schema,
-			queryString,
+			cfg.Port,
+			sslOptions,
 		)
 	}
 
-	return connectionString, nil
+	return strings.TrimSpace(connectionString), nil
 }
